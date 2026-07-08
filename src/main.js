@@ -337,17 +337,19 @@ function setupControls() {
   });
 
   // Theme Toggle (Dark / Light)
-  const savedTheme = localStorage.getItem('theme') || 'light';
-  if (savedTheme === 'dark') {
-    elements.body.classList.add('dark-mode');
-    toggleThemeIcons(true);
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  if (savedTheme === 'light') {
+    elements.body.classList.add('light-mode');
+    toggleThemeIcons(false); // isDark = false
+  } else {
+    toggleThemeIcons(true); // isDark = true
   }
   
   elements.themeToggle.addEventListener('click', () => {
     playHapticClick();
-    const isDark = elements.body.classList.toggle('dark-mode');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    toggleThemeIcons(isDark);
+    const isLight = elements.body.classList.toggle('light-mode');
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    toggleThemeIcons(!isLight); // if isLight is true, it is not dark (isDark = false)
   });
 }
 
@@ -355,11 +357,11 @@ function toggleThemeIcons(isDark) {
   const sunIcon = elements.themeToggle.querySelector('.sun-icon');
   const moonIcon = elements.themeToggle.querySelector('.moon-icon');
   if (isDark) {
-    sunIcon.style.display = 'none';
-    moonIcon.style.display = 'block';
-  } else {
     sunIcon.style.display = 'block';
     moonIcon.style.display = 'none';
+  } else {
+    sunIcon.style.display = 'none';
+    moonIcon.style.display = 'block';
   }
 }
 
