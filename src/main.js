@@ -147,7 +147,7 @@ function bindInputs() {
 
   // Plus / Minus Button Click Handler (Event Delegation)
   document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.calc-btn');
+    const btn = e.target.closest('.stepper-btn');
     if (!btn) return;
     
     playHapticClick();
