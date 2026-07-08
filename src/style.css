@@ -1,167 +1,100 @@
-/* CoffeeJ Premium Aesthetic System */
-/* Inspired by iOS Design Guidelines & Google Minimalism */
+/* CoffeeJ Sketch-Aligned CSS Styling */
 
 :root {
-  /* Font Family */
-  --font-family: 'Outfit', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-
-  /* Color Palette - Light Theme */
-  --bg-app: #f1f5f9;
-  --panel-inputs: #ffffff;
-  --panel-display: #0b0f19;
-  --border-color: #e2e8f0;
+  --font-family: 'Outfit', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
   
-  --text-main: #0f172a;
-  --text-sub: #475569;
-  --text-muted: #94a3b8;
+  /* Color Palette - Light */
+  --bg-app: #f4f6fa;
+  --bg-card: #ffffff;
+  --text-main: #111827;
+  --text-sub: #4b5563;
+  --border-dash: #e5e7eb;
+
+  --color-grey: #a3a3a3; /* Exact Sketch Gray */
+  --color-green: #00b96b; /* Exact Sketch Green */
   
-  --btn-stepper-bg: #f1f5f9;
-  --btn-stepper-text: #334155;
-  --btn-stepper-hover: #e2e8f0;
-
-  --color-blue: #3b82f6;
-  --color-blue-glow: rgba(59, 130, 246, 0.4);
-  --color-green: #10b981;
-  --color-green-glow: rgba(16, 185, 129, 0.4);
-
-  --shadow-dashboard: 0 25px 50px -12px rgba(15, 23, 42, 0.08), 0 0 1px rgba(15, 23, 42, 0.05);
-  --shadow-btn: 0 4px 12px rgba(37, 99, 235, 0.2);
-
-  --border-radius-card: 16px;
-  --border-radius-dashboard: 28px;
-  --border-radius-btn: 9999px; /* Pill shapes */
-
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.04);
+  --border-radius-card: 28px;
+  
   --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-fast: 0.12s ease;
+  --transition-fast: 0.1s ease;
 }
 
-/* Color Palette - Dark Theme Override */
+/* Color Palette - Dark */
 body.dark-mode {
-  --bg-app: #070a13;
-  --panel-inputs: #121824;
-  --panel-display: #090d16;
-  --border-color: #1e293b;
-  
-  --text-main: #f8fafc;
-  --text-sub: #94a3b8;
-  --text-muted: #64748b;
-  
-  --btn-stepper-bg: #1e293b;
-  --btn-stepper-text: #e2e8f0;
-  --btn-stepper-hover: #334155;
-
-  --shadow-dashboard: 0 30px 60px -15px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.05);
+  --bg-app: #090d16;
+  --bg-card: #121824;
+  --text-main: #f9fafb;
+  --text-sub: #cbd5e1;
+  --border-dash: #1e293b;
+  --color-grey: #52525b; /* Darker grey for better contrast */
 }
 
-/* Reset and Core Rules */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: var(--font-family);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   background-color: var(--bg-app);
+  color: var(--text-main);
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 24px;
-  transition: background-color var(--transition-normal);
+  padding: 20px;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
 /* App Wrapper */
 .app-wrapper {
   width: 100%;
-  max-width: 960px;
+  max-width: 540px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  animation: dashboardFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: 16px;
+  animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes dashboardFadeIn {
-  from { opacity: 0; transform: scale(0.98) translateY(10px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* The Main Dashboard Container (Unified Card) */
-.calculator-dashboard {
-  background-color: var(--panel-inputs);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius-dashboard);
-  box-shadow: var(--shadow-dashboard);
-  display: flex;
-  width: 100%;
-  overflow: hidden;
-  transition: background-color var(--transition-normal), border-color var(--transition-normal);
-}
-
-/* Responsive columns */
-@media (max-width: 800px) {
-  .calculator-dashboard {
-    flex-direction: column;
-  }
-  .inputs-section, .display-section {
-    width: 100% !important;
-  }
-  .display-section {
-    border-radius: 0 0 var(--border-radius-dashboard) var(--border-radius-dashboard);
-  }
-}
-
-/* ======================================= */
-/* LEFT COLUMN: Inputs Section             */
-/* ======================================= */
-.inputs-section {
-  width: 53%;
-  padding: 44px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 32px;
-}
-
-@media (max-width: 800px) {
-  .inputs-section {
-    padding: 32px 24px;
-  }
-}
-
-.section-header {
+/* Header */
+.app-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 8px;
 }
 
 .brand-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .logo-icon {
-  font-size: 2.2rem;
-  line-height: 1;
+  font-size: 1.8rem;
 }
 
 .brand-title h1 {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   color: var(--text-main);
 }
 
 .brand-title p {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  text-transform: uppercase;
   color: var(--text-sub);
+  text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-top: 1px;
 }
 
 .quick-controls {
@@ -169,293 +102,314 @@ body {
   gap: 8px;
 }
 
-/* Stepper Circular control buttons */
 .icon-btn {
-  background: var(--btn-stepper-bg);
-  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  border: 1px solid var(--border-dash);
   color: var(--text-main);
-  width: 38px;
-  height: 38px;
-  border-radius: var(--border-radius-card);
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
   transition: all var(--transition-fast);
 }
 
 .icon-btn:hover {
-  background: var(--btn-stepper-hover);
   transform: translateY(-1px);
+  border-color: var(--text-muted);
 }
 
 .icon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
 }
 
-/* iOS TableView Style list */
-.inputs-list {
+/* Main Calculator Layout Card */
+.calculator-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-dash);
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 40px;
   display: flex;
   flex-direction: column;
+  gap: 24px;
+  transition: background-color var(--transition-normal), border-color var(--transition-normal);
 }
 
-.input-row {
+@media (max-width: 480px) {
+  .calculator-card {
+    padding: 30px 20px;
+  }
+}
+
+/* Main Form Grid */
+.calculator-grid {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.grid-row {
+  display: flex;
   align-items: center;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--border-color);
+  justify-content: space-between;
+}
+
+.border-top-dash {
+  border-top: 2px dashed var(--border-dash);
+  padding-top: 24px;
+  margin-top: 4px;
   transition: border-color var(--transition-normal);
 }
 
-.input-row:last-child {
-  border-bottom: none;
-}
-
-.row-meta {
-  display: flex;
-  flex-direction: column;
-}
-
-.row-label {
-  font-size: 0.95rem;
-  font-weight: 600;
+.grid-label {
+  font-size: 1.55rem;
+  font-weight: 700;
   color: var(--text-main);
+  letter-spacing: -0.03em;
+  user-select: none;
 }
 
-.row-sub {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-top: 2px;
-}
-
-.row-control {
+.control-wrapper {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-/* Circular iOS steppers */
-.stepper-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--border-radius-round);
-  background: var(--btn-stepper-bg);
-  border: none;
-  color: var(--btn-stepper-text);
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
-  transition: all var(--transition-fast);
-}
-
-.stepper-btn:hover {
-  background: var(--btn-stepper-hover);
-  transform: scale(1.08);
-}
-
-.stepper-btn:active {
-  transform: scale(0.92);
-  opacity: 0.7;
-}
-
-/* Numeric input box */
-.number-box {
-  width: 72px;
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.number-box input {
-  width: 100%;
-  border: none;
-  background: transparent;
-  padding: 4px 22px 4px 2px;
-  font-size: 1.25rem;
+/* Unit Text */
+.unit-text {
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--text-main);
-  text-align: right;
+  min-width: 24px;
+  text-align: left;
+  user-select: none;
+}
+
+.unit-text.invisible {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Inputs (Grey Pill) */
+.input-pill {
+  width: 120px;
+  height: 44px;
+  background-color: var(--color-grey);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-normal), transform var(--transition-fast);
+}
+
+.input-pill:focus-within {
+  transform: scale(1.03);
+  box-shadow: 0 0 0 3px rgba(163, 163, 163, 0.2);
+}
+
+.input-pill input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  text-align: center;
   outline: none;
   font-family: 'Outfit', sans-serif;
 }
 
-/* Hide Spinners */
-.number-box input::-webkit-outer-spin-button,
-.number-box input::-webkit-inner-spin-button {
+/* Outputs (Green Pill) */
+.output-pill {
+  width: 150px;
+  height: 44px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-normal);
+  user-select: none;
+}
+
+.output-pill.green {
+  background-color: var(--color-green);
+}
+
+.output-pill span {
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Remove Spinners */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-.number-box input[type=number] {
+input[type=number] {
   -moz-appearance: textfield;
 }
 
-.unit-label {
-  position: absolute;
-  right: 2px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  pointer-events: none;
+/* ======================================= */
+/* Custom Checkbox (Grey Square) Style     */
+/* ======================================= */
+.checkbox-wrapper {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  display: block;
+  user-select: none;
 }
 
-.text-link-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  font-weight: 600;
+.checkbox-wrapper input {
+  position: absolute;
+  opacity: 0;
   cursor: pointer;
-  align-self: flex-start;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 44px;
+  height: 44px;
+  background-color: var(--color-grey);
+  border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  transition: color var(--transition-fast);
+  justify-content: center;
+  transition: background-color var(--transition-normal), transform var(--transition-fast);
 }
 
-.text-link-btn:hover {
-  color: var(--color-blue);
+.checkbox-wrapper:hover input ~ .checkmark {
+  transform: scale(1.05);
 }
 
-.reset-icon {
-  width: 14px;
-  height: 14px;
-  transition: transform var(--transition-normal);
+.checkbox-wrapper input:checked ~ .checkmark {
+  background-color: #4b5563; /* Darker grey when checked */
 }
 
-.text-link-btn:hover .reset-icon {
-  transform: rotate(-180deg);
+body.dark-mode .checkbox-wrapper input:checked ~ .checkmark {
+  background-color: #3b82f6; /* Accent color in dark mode for better visibility */
+}
+
+.checkmark::after {
+  content: "✓";
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: none;
+}
+
+.checkbox-wrapper input:checked ~ .checkmark::after {
+  display: block;
 }
 
 /* ======================================= */
-/* RIGHT COLUMN: Display Screen (Dark UI)   */
+/* "필요한 병" Section Layout               */
 /* ======================================= */
-.display-section {
-  width: 47%;
-  background-color: var(--panel-display);
-  padding: 44px;
+.needed-bottles-row {
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.main-label {
+  padding-top: 10px; /* Align with the first bottle-item */
+}
+
+.bottles-sub-list {
   display: flex;
   flex-direction: column;
-}
-
-@media (max-width: 800px) {
-  .display-section {
-    padding: 32px 24px;
-  }
-}
-
-.screen-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  height: 100%;
-}
-
-.screen-card {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: var(--border-radius-card);
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  transition: border-color var(--transition-normal), background-color var(--transition-normal);
-}
-
-.screen-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* Core Result styling */
-.main-result {
-  background: rgba(59, 130, 246, 0.05);
-  border-color: rgba(59, 130, 246, 0.15);
-}
-
-.main-display-value {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  margin-top: 4px;
-}
-
-.value-digits {
-  font-size: 2.8rem;
-  font-weight: 800;
-  color: var(--color-blue);
-  font-family: 'Outfit', sans-serif;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
-}
-
-.value-unit {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #64748b;
-}
-
-.display-hint {
-  font-size: 0.72rem;
-  color: #475569;
-  font-weight: 500;
-}
-
-/* Secondary Grid output layout */
-.sub-results-grid {
-  display: grid;
-  grid-template-columns: 1fr;
   gap: 14px;
 }
 
-.sub-display-value {
-  font-size: 1.4rem;
+.bottle-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.bottle-size {
+  width: 80px;
+  font-size: 1.35rem;
   font-weight: 700;
-  color: #f8fafc;
-  font-family: 'Outfit', sans-serif;
-  letter-spacing: -0.02em;
+  color: var(--text-main);
+  text-align: left;
+  user-select: none;
+}
+
+/* Disabled Output Pill when checkbox is not selected */
+.output-pill.disabled {
+  background-color: #e5e7eb !important;
+  opacity: 0.6;
+}
+
+body.dark-mode .output-pill.disabled {
+  background-color: #1e293b !important;
+}
+
+.output-pill.disabled span {
+  color: var(--text-muted) !important;
+}
+
+/* ======================================= */
+/* "필요한 박스 수" Section Layout           */
+/* ======================================= */
+.boxes-row {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-top: 2px dashed var(--border-dash);
+  padding-top: 24px;
   margin-top: 4px;
+  transition: border-color var(--transition-normal);
 }
 
-.sub-unit {
-  font-size: 0.9rem;
-  color: #64748b;
-  font-weight: 600;
-  margin-left: 2px;
+.boxes-label-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-.highlight-success {
-  background: rgba(16, 185, 129, 0.04);
-  border-color: rgba(16, 185, 129, 0.15);
+.center-label {
+  text-align: center;
 }
 
-.accent-green {
-  color: var(--color-green) !important;
+.boxes-value-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
-/* Details collapsible drawer inside calculator */
-.details-drawer {
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: var(--border-radius-card);
-  background: rgba(255, 255, 255, 0.01);
+/* ======================================= */
+/* Collapsible Details Accordion           */
+/* ======================================= */
+.details-accordion {
+  border: 1px solid var(--border-dash);
+  border-radius: 16px;
   overflow: hidden;
-  transition: all var(--transition-normal);
+  transition: border-color var(--transition-normal);
 }
 
-.drawer-trigger {
+.accordion-trigger {
   width: 100%;
   background: transparent;
   border: none;
-  color: #64748b;
-  padding: 14px 20px;
+  padding: 12px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -463,12 +417,17 @@ body {
   outline: none;
   font-size: 0.8rem;
   font-weight: 700;
+  color: var(--text-sub);
   transition: all var(--transition-fast);
 }
 
-.drawer-trigger:hover {
-  background: rgba(255, 255, 255, 0.02);
-  color: #94a3b8;
+.accordion-trigger:hover {
+  background: rgba(0,0,0,0.02);
+  color: var(--text-main);
+}
+
+body.dark-mode .accordion-trigger:hover {
+  background: rgba(255,255,255,0.02);
 }
 
 .chevron-icon {
@@ -477,124 +436,201 @@ body {
   transition: transform var(--transition-normal);
 }
 
-.drawer-trigger[aria-expanded="true"] .chevron-icon {
+.accordion-trigger[aria-expanded="true"] .chevron-icon {
   transform: rotate(180deg);
 }
 
-.drawer-content {
+.accordion-content {
   overflow: hidden;
   transition: max-height var(--transition-normal) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.drawer-inner {
+.accordion-inner {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 0 20px 20px 20px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.05);
+  padding: 0 18px 18px 18px;
+  border-top: 1px dashed var(--border-dash);
   padding-top: 16px;
 }
 
-.drawer-item {
+/* Order Inputs Grid (inside accordion) */
+.details-order-inputs {
+  border-bottom: 1px dashed var(--border-dash);
+  padding-bottom: 16px;
+}
+
+.section-sub-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+
+.order-inputs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.order-input-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.order-input-item label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-sub);
+}
+
+.small-input-wrapper {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-app);
+  border: 1px solid var(--border-dash);
+  border-radius: 8px;
+  padding: 4px 8px;
+  transition: border-color var(--transition-fast);
+}
+
+.small-input-wrapper:focus-within {
+  border-color: var(--color-grey);
+}
+
+.small-input-wrapper input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: right;
+  color: var(--text-main);
+}
+
+.small-unit {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-left: 2px;
+  user-select: none;
+}
+
+/* Detail statistics layout */
+.details-stats-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.detail-item {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.item-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-}
-
-.item-title {
+.detail-title {
   font-size: 0.72rem;
-  font-weight: 600;
-  color: #475569;
+  font-weight: 700;
+  color: var(--text-sub);
 }
 
-.item-val {
+.detail-val {
   font-size: 0.95rem;
   font-weight: 700;
-  color: #cbd5e1;
+  color: var(--text-main);
   font-family: 'Outfit', sans-serif;
 }
 
-.item-formula {
+.detail-formula {
   font-size: 0.65rem;
-  color: #334155;
+  color: var(--text-muted);
   font-style: italic;
 }
 
-/* Copy Action Area */
-.action-wrapper {
-  margin-top: auto;
+/* Action controls */
+.action-row {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  justify-content: space-between;
   align-items: center;
+  margin-top: 8px;
 }
 
-.copy-action-btn {
-  background: var(--color-blue);
-  color: #ffffff;
+.text-btn {
+  background: transparent;
   border: none;
-  width: 100%;
-  border-radius: var(--border-radius-btn);
-  padding: 14px 20px;
-  font-size: 0.95rem;
+  color: var(--text-sub);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.text-btn:hover {
+  color: var(--text-main);
+}
+
+.action-btn {
+  background-color: var(--text-main);
+  color: var(--bg-card);
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 20px;
+  font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 8px;
-  box-shadow: var(--shadow-btn);
-  transition: all var(--transition-normal);
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: all var(--transition-fast);
 }
 
-.copy-action-btn:hover {
-  background: #2563eb;
-  transform: translateY(-1.5px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
-}
-
-.copy-action-btn:active {
-  transform: translateY(0);
+.action-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
 }
 
 .copy-icon {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
 }
 
-.toast-popup {
-  font-size: 0.8rem;
+.toast-wrapper {
+  height: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toast-msg {
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--color-green);
-  animation: toastFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-@keyframes toastFadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.9) translateY(4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-/* Footer layout */
 .app-footer {
   text-align: center;
   font-size: 0.7rem;
-  color: var(--text-muted);
-  padding: 10px 0;
+  color: var(--text-sub);
+  opacity: 0.8;
 }
 
-/* Numeric output change flash */
+/* Flash effect */
 .changed-flash {
-  animation: valueBump var(--transition-normal);
+  animation: valueScale var(--transition-normal);
 }
 
-@keyframes valueBump {
-  0% { transform: scale(1); filter: brightness(1.2); }
-  50% { transform: scale(1.03); filter: brightness(1.4); }
+@keyframes valueScale {
+  0% { transform: scale(1); filter: brightness(1.1); }
+  50% { transform: scale(1.04); filter: brightness(1.2); }
   100% { transform: scale(1); filter: brightness(1); }
 }

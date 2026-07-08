@@ -5,7 +5,7 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CoffeeJ | 커피 추출 및 포장 계산기</title>
-    <meta name="description" content="기계 용량, 기구 수 및 필요 수량을 기반으로 커피 추출 총량, 1L 병 수 및 박스 포장 수량을 실시간으로 계산해주는 프리미엄 업무용 스마트 계산기 웹 앱입니다." />
+    <meta name="description" content="기계 용량, 기구 수 및 필요 수량을 기반으로 커피 추출 총량, 각 규격별 병 수 및 박스 포장 수량을 실시간으로 계산해주는 스마트 계산기 웹 앱입니다." />
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,221 +13,224 @@
   </head>
   <body>
     <div id="app" class="app-wrapper">
-      <!-- 메인 레이아웃 카드 (하나의 통합형 계산기 대시보드) -->
-      <div class="calculator-dashboard">
-        
-        <!-- 왼쪽 패널: 입력값 제어 영역 (iOS 설정 스타일의 정갈함) -->
-        <section class="inputs-section">
-          <header class="section-header">
-            <div class="brand-title">
-              <span class="logo-icon">☕</span>
-              <div>
-                <h1>CoffeeJ</h1>
-                <p>추출 및 포장 설정</p>
-              </div>
-            </div>
-            
-            <!-- 테마 및 사운드 조작 -->
-            <div class="quick-controls">
-              <button id="sound-toggle-btn" class="icon-btn" aria-label="소리 토글" title="사운드 피드백">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path class="sound-on" d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>
-                </svg>
-              </button>
-              <button id="theme-toggle-btn" class="icon-btn" aria-label="테마 토글" title="테마 변경">
-                <svg class="icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-                </svg>
-                <svg class="icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
-                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                </svg>
-              </button>
-            </div>
-          </header>
-
-          <!-- 리스트형 입력 그룹 (iOS TableView Style) -->
-          <div class="inputs-list">
-            
-            <!-- 1. 기계 용량 -->
-            <div class="input-row">
-              <div class="row-meta">
-                <span class="row-label">기계 용량</span>
-                <span class="row-sub">1대당 추출 용량</span>
-              </div>
-              <div class="row-control">
-                <button type="button" class="stepper-btn minus" data-target="machine-capacity" aria-label="감소">−</button>
-                <div class="number-box">
-                  <input type="number" id="machine-capacity" min="0.1" max="1000" step="0.1" value="15.0" />
-                  <span class="unit-label">L</span>
-                </div>
-                <button type="button" class="stepper-btn plus" data-target="machine-capacity" aria-label="증가">+</button>
-              </div>
-            </div>
-
-            <!-- 2. 기구 수 -->
-            <div class="input-row">
-              <div class="row-meta">
-                <span class="row-label">기구 수</span>
-                <span class="row-sub">동시 가동 추출 기구</span>
-              </div>
-              <div class="row-control">
-                <button type="button" class="stepper-btn minus" data-target="instrument-count" aria-label="감소">−</button>
-                <div class="number-box">
-                  <input type="number" id="instrument-count" min="1" max="500" step="1" value="12" />
-                  <span class="unit-label">개</span>
-                </div>
-                <button type="button" class="stepper-btn plus" data-target="instrument-count" aria-label="증가">+</button>
-              </div>
-            </div>
-
-            <!-- 3. 500ml 필요량 -->
-            <div class="input-row">
-              <div class="row-meta">
-                <span class="row-label">필요한 양 (500ml)</span>
-                <span class="row-sub">선주문 / 준비 수량</span>
-              </div>
-              <div class="row-control">
-                <button type="button" class="stepper-btn minus" data-target="needed-500" aria-label="감소">−</button>
-                <div class="number-box">
-                  <input type="number" id="needed-500" min="0" max="10000" step="1" value="0" />
-                  <span class="unit-label">병</span>
-                </div>
-                <button type="button" class="stepper-btn plus" data-target="needed-500" aria-label="증가">+</button>
-              </div>
-            </div>
-
-            <!-- 4. 1L 필요량 -->
-            <div class="input-row">
-              <div class="row-meta">
-                <span class="row-label">필요한 양 (1L)</span>
-                <span class="row-sub">선주문 / 준비 수량</span>
-              </div>
-              <div class="row-control">
-                <button type="button" class="stepper-btn minus" data-target="needed-1l" aria-label="감소">−</button>
-                <div class="number-box">
-                  <input type="number" id="needed-1l" min="0" max="10000" step="1" value="0" />
-                  <span class="unit-label">병</span>
-                </div>
-                <button type="button" class="stepper-btn plus" data-target="needed-1l" aria-label="증가">+</button>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- 초기화 단추 -->
-          <button id="reset-btn" class="text-link-btn" type="button">
-            <svg class="reset-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-            </svg>
-            설정 초기화
-          </button>
-        </section>
-
-        <!-- 오른쪽 패널: 계산기 연산 디스플레이 영역 (아이폰 계산기 느낌의 어두운 스크린) -->
-        <section class="display-section">
-          
-          <div class="screen-content">
-            
-            <!-- 1. 필요한 1L 병 수 (가장 핵심적인 메인 디스플레이) -->
-            <div class="screen-card main-result">
-              <span class="screen-label">필요한 1L 병 수</span>
-              <div class="main-display-value">
-                <span id="out-bottles-exact" class="value-digits">177</span>
-                <span class="value-unit">병</span>
-              </div>
-              <div class="display-hint">정수 올림 기준</div>
-            </div>
-
-            <!-- 2. 서브 결과 그리드 (총량 및 박스 포장 구성) -->
-            <div class="sub-results-grid">
-              
-              <div class="screen-card">
-                <span class="screen-label">총 추출 예정량</span>
-                <div class="sub-display-value">
-                  <span id="out-total-volume">176.40</span>
-                  <span class="sub-unit">L</span>
-                </div>
-              </div>
-
-              <div class="screen-card highlight-success">
-                <span class="screen-label">1L 병 포장 구성 (24병입)</span>
-                <div class="sub-display-value accent-green" id="out-boxes-exact">
-                  7 박스 + 9 병
-                </div>
-              </div>
-
-            </div>
-
-            <!-- 3. 상세 정보 보기 (아코디언 형태 서브 패널) -->
-            <div class="details-drawer">
-              <button id="toggle-details-btn" class="drawer-trigger" type="button" aria-expanded="false">
-                <span>상세 계산 및 연산 공식</span>
-                <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-              </button>
-              
-              <div id="details-content" class="drawer-content" style="max-height: 0px;">
-                <div class="drawer-inner">
-                  
-                  <div class="drawer-item">
-                    <div class="item-header">
-                      <span class="item-title">총 추출량 (ml)</span>
-                      <span class="item-val" id="det-total-ml">176,400 ml</span>
-                    </div>
-                    <p class="item-formula">공식: (기계 용량 × 1000 - 300) × 기구 수</p>
-                  </div>
-
-                  <div class="drawer-item">
-                    <div class="item-header">
-                      <span class="item-title">주문 필요총량</span>
-                      <span class="item-val" id="det-needed-volume">0.00 L (0 ml)</span>
-                    </div>
-                    <p class="item-formula">공식: (500ml 수량 × 500) + (1L 수량 × 1000)</p>
-                  </div>
-
-                  <div class="drawer-item">
-                    <div class="item-header">
-                      <span class="item-title">필요한 병 수 (정밀)</span>
-                      <span class="item-val" id="det-bottles-exact">176.40 병</span>
-                    </div>
-                    <p class="item-formula">공식: (총 추출량 - 필요총량) ÷ 1000</p>
-                  </div>
-
-                  <div class="drawer-item">
-                    <div class="item-header">
-                      <span class="item-title">박스 수 (정밀)</span>
-                      <span class="item-val" id="det-boxes-exact">7.35 박스</span>
-                    </div>
-                    <p class="item-formula">공식: 필요한 병 수 ÷ 24</p>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-
-            <!-- 4. 액션 영역 (복사 버튼) -->
-            <div class="action-wrapper">
-              <button id="copy-report-btn" class="copy-action-btn" type="button">
-                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                  <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-                </svg>
-                계산 결과 복사하기
-              </button>
-              <div id="copy-toast" class="toast-popup" style="display: none;">📋 리포트가 복사되었습니다!</div>
-            </div>
-
-          </div>
-
-        </section>
-
-      </div>
       
+      <!-- 헤더 및 컨트롤 버튼 -->
+      <header class="app-header">
+        <div class="brand-title">
+          <span class="logo-icon">☕</span>
+          <div>
+            <h1>CoffeeJ</h1>
+            <p>Smart Calculator</p>
+          </div>
+        </div>
+        <div class="quick-controls">
+          <button id="sound-toggle-btn" class="icon-btn" aria-label="소리 토글" title="사운드 피드백">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path class="sound-on" d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>
+            </svg>
+          </button>
+          <button id="theme-toggle-btn" class="icon-btn" aria-label="테마 토글" title="테마 변경">
+            <svg class="icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+            <svg class="icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- 사용자 요청 레이아웃 카드 -->
+      <main class="calculator-card">
+        <div class="calculator-grid">
+          
+          <!-- 1. 기계 용량 -->
+          <div class="grid-row">
+            <span class="grid-label">기계 용량</span>
+            <div class="control-wrapper">
+              <div class="input-pill">
+                <input type="number" id="machine-capacity" min="0.1" max="1000" step="0.1" value="15.0" />
+              </div>
+              <span class="unit-text">L</span>
+            </div>
+          </div>
+
+          <!-- 2. 기구 수 -->
+          <div class="grid-row">
+            <span class="grid-label">기구 수</span>
+            <div class="control-wrapper">
+              <div class="input-pill">
+                <input type="number" id="instrument-count" min="1" max="500" step="1" value="12" />
+              </div>
+              <span class="unit-text">대</span>
+            </div>
+          </div>
+
+          <!-- 3. 총량 -->
+          <div class="grid-row border-top-dash">
+            <span class="grid-label">총량</span>
+            <div class="control-wrapper">
+              <div class="output-pill green">
+                <span id="out-total-volume">176.40</span>
+              </div>
+              <span class="unit-text invisible">L</span> <!-- Layout alignment spacer -->
+            </div>
+          </div>
+
+          <!-- 4. 필요한 병 (세로 정렬 그룹) -->
+          <div class="grid-row needed-bottles-row">
+            <span class="grid-label main-label">필요한 병</span>
+            
+            <div class="bottles-sub-list">
+              
+              <!-- 350ml -->
+              <div class="bottle-item">
+                <!-- 회색 스퀘어 형태의 체크박스 -->
+                <label class="checkbox-wrapper">
+                  <input type="checkbox" id="active-350" name="target-bottle" />
+                  <span class="checkmark"></span>
+                </label>
+                <span class="bottle-size">350ml</span>
+                <div class="output-pill green">
+                  <span id="out-bottles-350">504</span>
+                </div>
+                <span class="unit-text">개</span>
+              </div>
+
+              <!-- 500ml -->
+              <div class="bottle-item">
+                <label class="checkbox-wrapper">
+                  <input type="checkbox" id="active-500" name="target-bottle" />
+                  <span class="checkmark"></span>
+                </label>
+                <span class="bottle-size">500ml</span>
+                <div class="output-pill green">
+                  <span id="out-bottles-500">0</span>
+                </div>
+                <span class="unit-text">개</span>
+              </div>
+
+              <!-- 1L -->
+              <div class="bottle-item">
+                <label class="checkbox-wrapper">
+                  <input type="checkbox" id="active-1l" name="target-bottle" checked />
+                  <span class="checkmark"></span>
+                </label>
+                <span class="bottle-size">1L</span>
+                <div class="output-pill green">
+                  <span id="out-bottles-1l">176.4</span>
+                </div>
+                <span class="unit-text">개</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 5. 필요한 박스 수 -->
+          <div class="grid-row boxes-row">
+            <div class="boxes-label-wrapper">
+              <span class="grid-label center-label">필요한 박스 수</span>
+            </div>
+            <div class="boxes-value-wrapper">
+              <div class="output-pill green">
+                <span id="out-boxes">7.35</span>
+              </div>
+              <span class="unit-text">개</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 6. 상세 정보 아코디언 (더 보기 및 공식) -->
+        <div class="details-accordion">
+          <button id="toggle-details-btn" class="accordion-trigger" type="button" aria-expanded="false">
+            <span>주문 입력 및 상세 연산 데이터</span>
+            <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+          
+          <div id="details-content" class="accordion-content" style="max-height: 0px;">
+            <div class="accordion-inner">
+              
+              <!-- 실무 요건: 선주문량 입력란 (디자인을 해치지 않는 슬라이드 설정형) -->
+              <div class="details-order-inputs">
+                <p class="section-sub-title">📦 선주문량 입력 (총량에서 제외)</p>
+                <div class="order-inputs-grid">
+                  <div class="order-input-item">
+                    <label for="needed-350">350ml 주문</label>
+                    <div class="small-input-wrapper">
+                      <input type="number" id="needed-350" min="0" value="0" />
+                      <span class="small-unit">병</span>
+                    </div>
+                  </div>
+                  <div class="order-input-item">
+                    <label for="needed-500">500ml 주문</label>
+                    <div class="small-input-wrapper">
+                      <input type="number" id="needed-500" min="0" value="0" />
+                      <span class="small-unit">병</span>
+                    </div>
+                  </div>
+                  <div class="order-input-item">
+                    <label for="needed-1l">1L 주문</label>
+                    <div class="small-input-wrapper">
+                      <input type="number" id="needed-1l" min="0" value="0" />
+                      <span class="small-unit">병</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 정밀 수치 보고 -->
+              <div class="details-stats-grid">
+                <div class="detail-item">
+                  <span class="detail-title">총 생산량 (ml)</span>
+                  <span class="detail-val" id="det-total-ml">176,400 ml</span>
+                  <span class="detail-formula">식: (기계 용량 × 1000 - 300) × 기구 수</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-title">선주문 필요총량</span>
+                  <span class="detail-val" id="det-needed-volume">0 ml</span>
+                  <span class="detail-formula">식: (350ml × 350) + (500ml × 500) + (1L × 1000)</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-title">남은 커피 용량</span>
+                  <span class="detail-val" id="det-remaining-volume">176,400 ml</span>
+                  <span class="detail-formula">식: 총 생산량 - 선주문 필요총량</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-title">선택된 병의 포장 상세 가이드</span>
+                  <span class="detail-val" id="det-boxes-pack">7 박스 + 9 병 (잔량)</span>
+                  <span class="detail-formula">식: 올림 처리 병 수 ÷ 박스 규격 (350ml: 30병/박스, 500ml: 24병/박스, 1L: 24병/박스)</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. 액션 영역 -->
+        <div class="action-row">
+          <button id="reset-btn" class="text-btn" type="button">초기화</button>
+          <button id="copy-report-btn" class="action-btn" type="button">
+            <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+            </svg>
+            결과 복사
+          </button>
+        </div>
+        <div class="toast-wrapper">
+          <span id="copy-toast" class="toast-msg" style="display: none;">📋 클립보드에 복사되었습니다!</span>
+        </div>
+
+      </main>
+
       <!-- 푸터 -->
       <footer class="app-footer">
-        <p>&copy; 2026 CoffeeJ. Designed with iOS & Google Minimalism.</p>
+        <p>&copy; 2026 CoffeeJ. Layout aligned with user request sketch.</p>
       </footer>
+      
     </div>
 
     <!-- 햅틱용 오디오 -->
