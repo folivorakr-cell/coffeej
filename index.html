@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CoffeeJ | 커피 추출 용량 및 포장 계산기</title>
+    <meta name="description" content="기계 용량, 기구 수 및 필요 수량을 기반으로 커피 추출 총량, 1L 병 수 및 박스 포장 수량을 실시간으로 계산해주는 프리미엄 업무용 스마트 계산기 웹 앱입니다." />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="CoffeeJ | 커피 추출 및 포장 계산기" />
+    <meta property="og:description" content="추출 기계 용량과 기구 수에 따른 추출 총량 및 병 포장 수량을 간편하게 계산하세요." />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div id="app" class="app-container">
+      <!-- 헤더 영역 -->
+      <header class="app-header">
+        <div class="logo-area">
+          <span class="logo-emoji">☕</span>
+          <div class="brand">
+            <h1>CoffeeJ</h1>
+            <p>Smart Extraction & Packaging Calculator</p>
+          </div>
+        </div>
+        <div class="header-controls">
+          <button id="sound-toggle-btn" class="icon-btn" aria-label="사운드 피드백 토글" title="사운드 피드백">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path class="sound-on" d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>
+            </svg>
+          </button>
+          <button id="theme-toggle-btn" class="icon-btn" aria-label="테마 토글" title="라이트/다크 테마 토글">
+            <svg class="icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5" />
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+            <svg class="icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- 메인 계산 레이아웃 -->
+      <main class="calculator-layout">
+        <!-- 왼쪽 패널: 입력값 제어 -->
+        <section class="input-panel card">
+          <div class="panel-header">
+            <h2>추출 설정 & 변수</h2>
+            <p>기계와 주문에 맞춰 값을 조정하세요.</p>
+          </div>
+
+          <div class="input-groups">
+            <!-- 1. 기계 용량 -->
+            <div class="input-card">
+              <div class="input-meta">
+                <label for="machine-capacity">기계 용량</label>
+                <span class="info-tip" title="1회 추출 시 기계 1대가 담을 수 있는 최대 리터량">ℹ️ L</span>
+              </div>
+              <div class="control-row">
+                <button type="button" class="calc-btn minus" data-target="machine-capacity" aria-label="감소">-</button>
+                <div class="input-wrapper">
+                  <input type="number" id="machine-capacity" min="0.1" max="1000" step="0.1" value="15.0" />
+                  <span class="unit">L</span>
+                </div>
+                <button type="button" class="calc-btn plus" data-target="machine-capacity" aria-label="증가">+</button>
+              </div>
+              <div class="slider-wrapper">
+                <input type="range" id="machine-capacity-slider" min="1" max="50" step="0.5" value="15" />
+              </div>
+            </div>
+
+            <!-- 2. 기구 수 -->
+            <div class="input-card">
+              <div class="input-meta">
+                <label for="instrument-count">기구 수</label>
+                <span class="info-tip" title="동시 가동하는 커피 추출 기구 또는 머신 수">ℹ️ 개</span>
+              </div>
+              <div class="control-row">
+                <button type="button" class="calc-btn minus" data-target="instrument-count" aria-label="감소">-</button>
+                <div class="input-wrapper">
+                  <input type="number" id="instrument-count" min="1" max="500" step="1" value="12" />
+                  <span class="unit">개</span>
+                </div>
+                <button type="button" class="calc-btn plus" data-target="instrument-count" aria-label="증가">+</button>
+              </div>
+              <div class="slider-wrapper">
+                <input type="range" id="instrument-count-slider" min="1" max="50" step="1" value="12" />
+              </div>
+            </div>
+
+            <!-- 3. 필요한 양 (500ml) -->
+            <div class="input-card">
+              <div class="input-meta">
+                <label for="needed-500">필요한 양 (500ml)</label>
+                <span class="info-tip" title="기 선주문 혹은 준비해야 할 500ml 병 개수">ℹ️ 병</span>
+              </div>
+              <div class="control-row">
+                <button type="button" class="calc-btn minus" data-target="needed-500" aria-label="감소">-</button>
+                <div class="input-wrapper">
+                  <input type="number" id="needed-500" min="0" max="10000" step="1" value="0" />
+                  <span class="unit">병</span>
+                </div>
+                <button type="button" class="calc-btn plus" data-target="needed-500" aria-label="증가">+</button>
+              </div>
+            </div>
+
+            <!-- 4. 필요한 양 (1L) -->
+            <div class="input-card">
+              <div class="input-meta">
+                <label for="needed-1l">필요한 양 (1L)</label>
+                <span class="info-tip" title="기 선주문 혹은 준비해야 할 1L 병 개수">ℹ️ 병</span>
+              </div>
+              <div class="control-row">
+                <button type="button" class="calc-btn minus" data-target="needed-1l" aria-label="감소">-</button>
+                <div class="input-wrapper">
+                  <input type="number" id="needed-1l" min="0" max="10000" step="1" value="0" />
+                  <span class="unit">병</span>
+                </div>
+                <button type="button" class="calc-btn plus" data-target="needed-1l" aria-label="증가">+</button>
+              </div>
+            </div>
+          </div>
+          
+          <button id="reset-btn" class="reset-btn" type="button">
+            <svg class="reset-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            초기화
+          </button>
+        </section>
+
+        <!-- 오른쪽 패널: 실시간 계산 결과 출력 -->
+        <section class="display-panel card">
+          <div class="panel-header">
+            <h2>실시간 연산 화면</h2>
+            <p>실제 계산 결과 및 포장 가이드를 확인하세요.</p>
+          </div>
+
+          <div class="display-grid">
+            <!-- 1. 총량 -->
+            <div class="display-card glow-card">
+              <span class="display-label">총량</span>
+              <div class="display-value-wrapper">
+                <div class="display-value" id="out-total-volume">176.40</div>
+                <span class="display-unit">L</span>
+              </div>
+              <div class="display-sub-value" id="out-total-ml">176,400 ml</div>
+              <div class="formula-info">식: (용량 × 1000 - 300) × 기구수</div>
+            </div>
+
+            <!-- 2. 필요총량 -->
+            <div class="display-card">
+              <span class="display-label">필요총량</span>
+              <div class="display-value-wrapper">
+                <div class="display-value" id="out-needed-volume">0.00</div>
+                <span class="display-unit">L</span>
+              </div>
+              <div class="display-sub-value" id="out-needed-ml">0 ml</div>
+              <div class="formula-info">식: (500ml × 500) + (1L × 1000)</div>
+            </div>
+
+            <!-- 3. 필요한 1L 병 수 -->
+            <div class="display-card highlight-card">
+              <span class="display-label">필요한 1L 병 수</span>
+              <div class="display-value-wrapper">
+                <div class="display-value text-accent" id="out-bottles-exact">176.40</div>
+                <span class="display-unit">병</span>
+              </div>
+              <div class="display-guide" id="out-bottles-guide">실무 권장: <strong>177</strong> 병 (올림)</div>
+              <div class="formula-info">식: (총량 - 필요총량) ÷ 1000</div>
+            </div>
+
+            <!-- 4. 1L 병 수 /24 (1박스) -->
+            <div class="display-card highlight-card">
+              <span class="display-label">1L 병 수 / 24 (1박스)</span>
+              <div class="display-value-wrapper">
+                <div class="display-value text-success" id="out-boxes-exact">7.35</div>
+                <span class="display-unit">박스</span>
+              </div>
+              <div class="display-guide" id="out-boxes-guide">포장 구성: <strong>7</strong> 박스 + <strong>9</strong> 병</div>
+              <div class="formula-info">식: 필요한 병 수 ÷ 24 (올림 시 8박스)</div>
+            </div>
+          </div>
+
+          <!-- 업무용 공유 리포트 기능 -->
+          <div class="report-area">
+            <button id="copy-report-btn" class="primary-btn" type="button">
+              <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+              </svg>
+              계산 결과 복사하기
+            </button>
+            <span id="copy-toast" class="toast-message" style="display: none;">📋 클립보드에 복사되었습니다!</span>
+          </div>
+        </section>
+      </main>
+
+      <!-- 푸터 -->
+      <footer class="app-footer-info">
+        <p>&copy; 2026 CoffeeJ. All Rights Reserved. Powered by Google & iPhone Aesthetic Design.</p>
+      </footer>
+    </div>
+
+    <!-- Audio element for haptic feedback -->
+    <audio id="haptic-audio" src="data:audio/wav;base64,UklGRi4AAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoAAAAAQEBAYGBgcHBw" preload="auto"></audio>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
