@@ -1,3 +1,5 @@
+import './style.css';
+
 // CoffeeJ Real-time Calculation and Interaction Logic
 // Aligned to user sketch layout & custom checkbox logic
 
