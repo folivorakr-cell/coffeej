@@ -193,7 +193,7 @@ body {
 /* Main Layout Grid */
 .calculator-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.1fr;
   gap: 24px;
 }
 
@@ -234,7 +234,7 @@ body {
 .input-groups {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 /* Input Cards */
@@ -245,7 +245,7 @@ body {
   padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
@@ -270,9 +270,8 @@ body {
 .info-tip {
   font-size: 0.75rem;
   color: var(--text-muted);
-  cursor: help;
   user-select: none;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .control-row {
@@ -350,52 +349,6 @@ body {
   color: var(--text-muted);
 }
 
-/* Slider Controls */
-.slider-wrapper {
-  margin-top: 4px;
-}
-
-input[type=range] {
-  -webkit-appearance: none;
-  width: 100%;
-  background: transparent;
-  outline: none;
-}
-
-input[type=range]::-webkit-slider-runnable-track {
-  width: 100%;
-  height: 6px;
-  cursor: pointer;
-  background: var(--bg-primary);
-  border-radius: 3px;
-  transition: background var(--transition-fast);
-}
-
-body.dark-mode input[type=range]::-webkit-slider-runnable-track {
-  background: #334155;
-}
-
-input[type=range]::-webkit-slider-thumb {
-  height: 18px;
-  width: 18px;
-  border-radius: var(--border-radius-round);
-  background: var(--color-accent);
-  cursor: pointer;
-  -webkit-appearance: none;
-  margin-top: -6px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-  transition: transform var(--transition-fast), background-color var(--transition-fast);
-}
-
-input[type=range]::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
-  background: var(--color-accent-dark);
-}
-
-input[type=range]:active::-webkit-slider-thumb {
-  transform: scale(1.3);
-}
-
 /* Reset Button */
 .reset-btn {
   background: transparent;
@@ -429,18 +382,24 @@ input[type=range]:active::-webkit-slider-thumb {
   transform: rotate(-180deg);
 }
 
-/* Display Panel (Outputs) */
-.display-grid {
+/* Display Panel (Outputs) - Simplified layout */
+.display-grid.simplified {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  flex: 1;
 }
 
 @media (max-width: 600px) {
-  .display-grid {
+  .display-grid.simplified {
     grid-template-columns: 1fr;
   }
+  .full-width {
+    grid-column: span 1 !important;
+  }
+}
+
+.full-width {
+  grid-column: span 2;
 }
 
 .display-card {
@@ -451,7 +410,7 @@ input[type=range]:active::-webkit-slider-thumb {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 8px;
+  gap: 4px;
   position: relative;
   overflow: hidden;
   transition: all var(--transition-slow);
@@ -504,7 +463,7 @@ body.dark-mode .highlight-card {
 }
 
 .display-value {
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   font-weight: 800;
   font-family: 'Outfit', sans-serif;
   letter-spacing: -0.04em;
@@ -513,34 +472,16 @@ body.dark-mode .highlight-card {
   transition: transform var(--transition-normal);
 }
 
+/* Make box config font slightly smaller to fit packaging description */
+.full-width .display-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
 .display-unit {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-secondary);
-}
-
-.display-sub-value {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
-.display-guide {
-  font-size: 0.85rem;
-  color: var(--text-primary);
-  background: var(--bg-secondary);
-  border: 1px solid var(--card-border);
-  border-radius: var(--border-radius-sm);
-  padding: 6px 10px;
-  font-weight: 500;
-  margin-top: 8px;
-  display: inline-block;
-  box-shadow: var(--shadow-sm);
-}
-
-.display-guide strong {
-  color: var(--color-accent);
-  font-weight: 700;
 }
 
 .text-accent {
@@ -551,13 +492,89 @@ body.dark-mode .highlight-card {
   color: var(--color-success) !important;
 }
 
-.formula-info {
-  font-size: 0.7rem;
+/* Details Accordion (View detailed calculations) */
+.details-accordion {
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius-md);
+  background: var(--bg-secondary);
+  overflow: hidden;
+  transition: all var(--transition-normal);
+}
+
+.accordion-trigger {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  outline: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.accordion-trigger:hover {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.chevron-icon {
+  width: 18px;
+  height: 18px;
+  transition: transform var(--transition-normal);
+}
+
+.accordion-trigger[aria-expanded="true"] .chevron-icon {
+  transform: rotate(180deg);
+}
+
+.accordion-content {
+  overflow: hidden;
+  transition: max-height var(--transition-normal) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.details-inner-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 0 20px 20px 20px;
+  border-top: 1px dashed var(--card-border);
+  padding-top: 16px;
+}
+
+@media (max-width: 600px) {
+  .details-inner-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.detail-val {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+}
+
+.detail-formula {
+  font-size: 0.72rem;
   color: var(--text-muted);
   font-style: italic;
-  margin-top: auto;
-  padding-top: 8px;
-  border-top: 1px dashed var(--card-border);
 }
 
 /* Report Action Area */
@@ -630,6 +647,6 @@ body.dark-mode .highlight-card {
 
 @keyframes valueFlash {
   0% { transform: scale(1); filter: brightness(1.2); }
-  50% { transform: scale(1.05); filter: brightness(1.4); }
+  50% { transform: scale(1.02); filter: brightness(1.3); }
   100% { transform: scale(1); filter: brightness(1); }
 }

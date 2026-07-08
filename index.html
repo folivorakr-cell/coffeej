@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☕</text></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CoffeeJ | 커피 추출 용량 및 포장 계산기</title>
+    <title>CoffeeJ | 커피 추출 및 포장 계산기</title>
     <meta name="description" content="기계 용량, 기구 수 및 필요 수량을 기반으로 커피 추출 총량, 1L 병 수 및 박스 포장 수량을 실시간으로 계산해주는 프리미엄 업무용 스마트 계산기 웹 앱입니다." />
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -50,7 +50,7 @@
         <section class="input-panel card">
           <div class="panel-header">
             <h2>추출 설정 & 변수</h2>
-            <p>기계와 주문에 맞춰 값을 조정하세요.</p>
+            <p>기계 용량과 기구 수를 기입하세요.</p>
           </div>
 
           <div class="input-groups">
@@ -58,7 +58,7 @@
             <div class="input-card">
               <div class="input-meta">
                 <label for="machine-capacity">기계 용량</label>
-                <span class="info-tip" title="1회 추출 시 기계 1대가 담을 수 있는 최대 리터량">ℹ️ L</span>
+                <span class="info-tip" title="1회 추출 시 기계 1대가 담을 수 있는 최대 리터량">L</span>
               </div>
               <div class="control-row">
                 <button type="button" class="calc-btn minus" data-target="machine-capacity" aria-label="감소">-</button>
@@ -68,16 +68,13 @@
                 </div>
                 <button type="button" class="calc-btn plus" data-target="machine-capacity" aria-label="증가">+</button>
               </div>
-              <div class="slider-wrapper">
-                <input type="range" id="machine-capacity-slider" min="1" max="50" step="0.5" value="15" />
-              </div>
             </div>
 
             <!-- 2. 기구 수 -->
             <div class="input-card">
               <div class="input-meta">
                 <label for="instrument-count">기구 수</label>
-                <span class="info-tip" title="동시 가동하는 커피 추출 기구 또는 머신 수">ℹ️ 개</span>
+                <span class="info-tip" title="동시 가동하는 커피 추출 기구 또는 머신 수">개</span>
               </div>
               <div class="control-row">
                 <button type="button" class="calc-btn minus" data-target="instrument-count" aria-label="감소">-</button>
@@ -87,16 +84,13 @@
                 </div>
                 <button type="button" class="calc-btn plus" data-target="instrument-count" aria-label="증가">+</button>
               </div>
-              <div class="slider-wrapper">
-                <input type="range" id="instrument-count-slider" min="1" max="50" step="1" value="12" />
-              </div>
             </div>
 
             <!-- 3. 필요한 양 (500ml) -->
             <div class="input-card">
               <div class="input-meta">
                 <label for="needed-500">필요한 양 (500ml)</label>
-                <span class="info-tip" title="기 선주문 혹은 준비해야 할 500ml 병 개수">ℹ️ 병</span>
+                <span class="info-tip" title="기 선주문 혹은 준비해야 할 500ml 병 개수">병</span>
               </div>
               <div class="control-row">
                 <button type="button" class="calc-btn minus" data-target="needed-500" aria-label="감소">-</button>
@@ -112,7 +106,7 @@
             <div class="input-card">
               <div class="input-meta">
                 <label for="needed-1l">필요한 양 (1L)</label>
-                <span class="info-tip" title="기 선주문 혹은 준비해야 할 1L 병 개수">ℹ️ 병</span>
+                <span class="info-tip" title="기 선주문 혹은 준비해야 할 1L 병 개수">병</span>
               </div>
               <div class="control-row">
                 <button type="button" class="calc-btn minus" data-target="needed-1l" aria-label="감소">-</button>
@@ -137,52 +131,68 @@
         <section class="display-panel card">
           <div class="panel-header">
             <h2>실시간 연산 화면</h2>
-            <p>실제 계산 결과 및 포장 가이드를 확인하세요.</p>
+            <p>포장 가이드와 핵심 수량을 한눈에 확인하세요.</p>
           </div>
 
-          <div class="display-grid">
-            <!-- 1. 총량 -->
+          <div class="display-grid simplified">
+            <!-- 1. 총 추출량 -->
             <div class="display-card glow-card">
-              <span class="display-label">총량</span>
+              <span class="display-label">총 추출 예정량</span>
               <div class="display-value-wrapper">
                 <div class="display-value" id="out-total-volume">176.40</div>
                 <span class="display-unit">L</span>
               </div>
-              <div class="display-sub-value" id="out-total-ml">176,400 ml</div>
-              <div class="formula-info">식: (용량 × 1000 - 300) × 기구수</div>
             </div>
 
-            <!-- 2. 필요총량 -->
-            <div class="display-card">
-              <span class="display-label">필요총량</span>
-              <div class="display-value-wrapper">
-                <div class="display-value" id="out-needed-volume">0.00</div>
-                <span class="display-unit">L</span>
-              </div>
-              <div class="display-sub-value" id="out-needed-ml">0 ml</div>
-              <div class="formula-info">식: (500ml × 500) + (1L × 1000)</div>
-            </div>
-
-            <!-- 3. 필요한 1L 병 수 -->
+            <!-- 2. 필요한 1L 병 수 (핵심) -->
             <div class="display-card highlight-card">
               <span class="display-label">필요한 1L 병 수</span>
               <div class="display-value-wrapper">
-                <div class="display-value text-accent" id="out-bottles-exact">176.40</div>
+                <div class="display-value text-accent" id="out-bottles-exact">177</div>
                 <span class="display-unit">병</span>
               </div>
-              <div class="display-guide" id="out-bottles-guide">실무 권장: <strong>177</strong> 병 (올림)</div>
-              <div class="formula-info">식: (총량 - 필요총량) ÷ 1000</div>
             </div>
 
-            <!-- 4. 1L 병 수 /24 (1박스) -->
-            <div class="display-card highlight-card">
-              <span class="display-label">1L 병 수 / 24 (1박스)</span>
+            <!-- 3. 박스 포장 구성 -->
+            <div class="display-card highlight-card full-width">
+              <span class="display-label">1L 병 포장 구성 (24병입)</span>
               <div class="display-value-wrapper">
-                <div class="display-value text-success" id="out-boxes-exact">7.35</div>
-                <span class="display-unit">박스</span>
+                <div class="display-value text-success" id="out-boxes-exact">7 박스 + 9 병</div>
               </div>
-              <div class="display-guide" id="out-boxes-guide">포장 구성: <strong>7</strong> 박스 + <strong>9</strong> 병</div>
-              <div class="formula-info">식: 필요한 병 수 ÷ 24 (올림 시 8박스)</div>
+            </div>
+          </div>
+
+          <!-- 상세 정보 보기 (아코디언) -->
+          <div class="details-accordion">
+            <button id="toggle-details-btn" class="accordion-trigger" type="button" aria-expanded="false">
+              <span>상세 계산 데이터 및 공식 보기</span>
+              <svg class="chevron-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div id="details-content" class="accordion-content" style="max-height: 0px;">
+              <div class="details-inner-grid">
+                <div class="detail-item">
+                  <span class="detail-title">총 추출량 (ml)</span>
+                  <span class="detail-val" id="det-total-ml">176,400 ml</span>
+                  <span class="detail-formula">공식: (기계 용량 × 1000 - 300) × 기구 수</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-title">주문 필요총량</span>
+                  <span class="detail-val" id="det-needed-volume">0.00 L (0 ml)</span>
+                  <span class="detail-formula">공식: (500ml 수량 × 500) + (1L 수량 × 1000)</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-title">필요한 병 수 (정밀 소수점)</span>
+                  <span class="detail-val" id="det-bottles-exact">176.40 병</span>
+                  <span class="detail-formula">공식: (총 추출량 - 필요총량) ÷ 1000</span>
+                </div>
+                <div class="detail-item">
+                  <span class="detail-title">박스 수 (정밀 소수점)</span>
+                  <span class="detail-val" id="det-boxes-exact">7.35 박스</span>
+                  <span class="detail-formula">공식: 필요한 병 수 ÷ 24</span>
+                </div>
+              </div>
             </div>
           </div>
 

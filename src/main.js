@@ -1,25 +1,28 @@
 // CoffeeJ Application Logic
-// Real-time calculation, Web Audio haptics, UI/UX interaction, and Dark Mode
+// Real-time calculation, Web Audio haptics, UI/UX interaction, Accordion, and Dark Mode
 
 // 1. DOM Elements
 const elements = {
   // Inputs
   machineCapacity: document.getElementById('machine-capacity'),
-  machineSlider: document.getElementById('machine-capacity-slider'),
   instrumentCount: document.getElementById('instrument-count'),
-  instrumentSlider: document.getElementById('instrument-count-slider'),
   needed500: document.getElementById('needed-500'),
   needed1l: document.getElementById('needed-1l'),
   
-  // Outputs
+  // Simplified Outputs (Core display)
   outTotalVolume: document.getElementById('out-total-volume'),
-  outTotalMl: document.getElementById('out-total-ml'),
-  outNeededVolume: document.getElementById('out-needed-volume'),
-  outNeededMl: document.getElementById('out-needed-ml'),
   outBottlesExact: document.getElementById('out-bottles-exact'),
-  outBottlesGuide: document.getElementById('out-bottles-guide'),
   outBoxesExact: document.getElementById('out-boxes-exact'),
-  outBoxesGuide: document.getElementById('out-boxes-guide'),
+  
+  // Detailed Outputs (Inside accordion)
+  detTotalMl: document.getElementById('det-total-ml'),
+  detNeededVolume: document.getElementById('det-needed-volume'),
+  detBottlesExact: document.getElementById('det-bottles-exact'),
+  detBoxesExact: document.getElementById('det-boxes-exact'),
+  
+  // Accordion elements
+  toggleDetailsBtn: document.getElementById('toggle-details-btn'),
+  detailsContent: document.getElementById('details-content'),
   
   // Control Buttons
   resetBtn: document.getElementById('reset-btn'),
@@ -95,7 +98,6 @@ function runCalculations() {
   const boxesExact = bottlesExact / 24;
   
   // Practical Box Breakdown (24 bottles per box)
-  // If bottles count is positive:
   let boxesInt = 0;
   let bottlesRemainder = 0;
   if (bottlesRecommended > 0) {
@@ -103,19 +105,19 @@ function runCalculations() {
     bottlesRemainder = bottlesRecommended % 24;
   }
 
-  // Update Display Values
+  // Update Simplified Display (Main Screen)
   updateValueIfChanged(elements.outTotalVolume, formatNumber(totalVolumeL, 2));
-  updateValueIfChanged(elements.outTotalMl, `${formatNumber(totalVolumeMl, 0)} ml`);
-  
-  updateValueIfChanged(elements.outNeededVolume, formatNumber(neededVolumeL, 2));
-  updateValueIfChanged(elements.outNeededMl, `${formatNumber(neededVolumeMl, 0)} ml`);
+  updateValueIfChanged(elements.outBottlesExact, formatNumber(bottlesRecommended, 0));
+  updateValueIfChanged(elements.outBoxesExact, `${boxesInt} 박스 + ${bottlesRemainder} 병`);
 
-  // Allow negative representation in exact calculation, but guide is clamped to 0
-  updateValueIfChanged(elements.outBottlesExact, formatNumber(bottlesExact, 2));
-  elements.outBottlesGuide.innerHTML = `실무 권장: <strong>${formatNumber(bottlesRecommended, 0)}</strong> 병 (올림)`;
+  // Update Detailed Display (Inside Accordion)
+  updateValueIfChanged(elements.detTotalMl, `${formatNumber(totalVolumeMl, 0)} ml`);
+  updateValueIfChanged(elements.detNeededVolume, `${formatNumber(neededVolumeL, 2)} L (${formatNumber(neededVolumeMl, 0)} ml)`);
+  updateValueIfChanged(elements.detBottlesExact, `${formatNumber(bottlesExact, 2)} 병`);
+  updateValueIfChanged(elements.detBoxesExact, `${formatNumber(boxesExact, 2)} 박스`);
 
-  updateValueIfChanged(elements.outBoxesExact, formatNumber(boxesExact, 2));
-  elements.outBoxesGuide.innerHTML = `포장 구성: <strong>${boxesInt}</strong> 박스 + <strong>${bottlesRemainder}</strong> 병`;
+  // Dynamically update accordion height if expanded to prevent clipping
+  updateDetailsHeight();
 }
 
 // 6. UI Helpers
@@ -129,33 +131,17 @@ function updateValueIfChanged(element, newValue) {
   }
 }
 
-// 7. Input Synchronization
+function updateDetailsHeight() {
+  const isExpanded = elements.toggleDetailsBtn.getAttribute('aria-expanded') === 'true';
+  if (isExpanded) {
+    elements.detailsContent.style.maxHeight = elements.detailsContent.scrollHeight + 'px';
+  }
+}
+
+// 7. Input Synchronization & Events
 function bindInputs() {
-  // Sync Machine Capacity Input & Slider
-  elements.machineCapacity.addEventListener('input', (e) => {
-    let val = parseFloat(e.target.value);
-    if (isNaN(val)) val = 0;
-    elements.machineSlider.value = val;
-    runCalculations();
-  });
-  elements.machineSlider.addEventListener('input', (e) => {
-    elements.machineCapacity.value = parseFloat(e.target.value).toFixed(1);
-    runCalculations();
-  });
-
-  // Sync Instrument Count Input & Slider
-  elements.instrumentCount.addEventListener('input', (e) => {
-    let val = parseInt(e.target.value, 10);
-    if (isNaN(val)) val = 0;
-    elements.instrumentSlider.value = val;
-    runCalculations();
-  });
-  elements.instrumentSlider.addEventListener('input', (e) => {
-    elements.instrumentCount.value = e.target.value;
-    runCalculations();
-  });
-
-  // Normal inputs
+  elements.machineCapacity.addEventListener('input', runCalculations);
+  elements.instrumentCount.addEventListener('input', runCalculations);
   elements.needed500.addEventListener('input', runCalculations);
   elements.needed1l.addEventListener('input', runCalculations);
 
@@ -187,13 +173,6 @@ function bindInputs() {
       input.value = val.toFixed(1);
     }
 
-    // Sync sliders if applicable
-    if (targetId === 'machine-capacity') {
-      elements.machineSlider.value = val;
-    } else if (targetId === 'instrument-count') {
-      elements.instrumentSlider.value = val;
-    }
-
     // Trigger calculation
     runCalculations();
   });
@@ -209,25 +188,24 @@ function setupSharing() {
     const n500 = elements.needed500.value;
     const n1l = elements.needed1l.value;
     
-    const totalVol = elements.outTotalVolume.textContent;
-    const totalMl = elements.outTotalMl.textContent;
-    const neededVol = elements.outNeededVolume.textContent;
-    const neededMl = elements.outNeededMl.textContent;
-    const bottlesExact = elements.outBottlesExact.textContent;
-    const bottlesRecommended = Math.max(0, Math.ceil(parseFloat(bottlesExact.replace(/,/g, ''))));
-    const boxesExact = elements.outBoxesExact.textContent;
-    
-    // Parse boxes & remaining bottles
+    // Recalculate variables for report text
+    const totalVolumeMl = (parseFloat(cap) * 1000 - 300) * parseInt(inst, 10);
+    const totalVolumeL = totalVolumeMl / 1000;
+    const neededVolumeMl = parseInt(n500, 10) * 500 + parseInt(n1l, 10) * 1000;
+    const neededVolumeL = neededVolumeMl / 1000;
+    const bottlesExact = (totalVolumeMl - neededVolumeMl) / 1000;
+    const bottlesRecommended = Math.max(0, Math.ceil(bottlesExact));
+    const boxesExact = bottlesExact / 24;
     const boxesInt = Math.floor(bottlesRecommended / 24);
     const bottlesRemainder = bottlesRecommended % 24;
 
     const reportText = `[CoffeeJ 생산 계산 리포트]
 - 기계 용량: ${cap} L | 기구 수: ${inst} 개
-- 추출 총량: ${totalVol} L (${totalMl})
-- 주문 필요량: 500ml ${n500}병, 1L ${n1l}병 (총 ${neededVol} L / ${neededMl})
+- 추출 총량: ${formatNumber(totalVolumeL, 2)} L (${formatNumber(totalVolumeMl, 0)} ml)
+- 주문 필요량: 500ml ${n500}병, 1L ${n1l}병 (총 ${formatNumber(neededVolumeL, 2)} L / ${formatNumber(neededVolumeMl, 0)} ml)
 ---------------------------------------
-- 생산 대기 1L 병 수: ${bottlesExact} 병 (실무 권장: ${bottlesRecommended} 병)
-- 박스 포장 (24병입): ${boxesExact} 박스 (구성: ${boxesInt} 박스 + ${bottlesRemainder} 병)
+- 생산 대기 1L 병 수: ${formatNumber(bottlesExact, 2)} 병 (실무 권장: ${bottlesRecommended} 병)
+- 박스 포장 (24병입): ${formatNumber(boxesExact, 2)} 박스 (구성: ${boxesInt} 박스 + ${bottlesRemainder} 병)
 - 일시: ${new Date().toLocaleString('ko-KR')}`;
 
     navigator.clipboard.writeText(reportText).then(() => {
@@ -243,17 +221,30 @@ function setupSharing() {
   });
 }
 
-// 9. Extra UI controls: Sound Toggle, Reset, Theme Toggle
+// 9. Extra UI controls: Accordion, Sound Toggle, Reset, Theme Toggle
 function setupControls() {
+  // Accordion Toggle
+  elements.toggleDetailsBtn.addEventListener('click', () => {
+    const isExpanded = elements.toggleDetailsBtn.getAttribute('aria-expanded') === 'true';
+    const nextState = !isExpanded;
+    elements.toggleDetailsBtn.setAttribute('aria-expanded', nextState);
+    
+    if (nextState) {
+      elements.detailsContent.style.maxHeight = elements.detailsContent.scrollHeight + 'px';
+    } else {
+      elements.detailsContent.style.maxHeight = '0px';
+    }
+    
+    playHapticClick();
+  });
+
   // Reset
   elements.resetBtn.addEventListener('click', () => {
     playHapticClick();
     
     // Set default values
     elements.machineCapacity.value = "15.0";
-    elements.machineSlider.value = 15;
     elements.instrumentCount.value = "12";
-    elements.instrumentSlider.value = 12;
     elements.needed500.value = "0";
     elements.needed1l.value = "0";
     
