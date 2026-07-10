@@ -339,7 +339,9 @@ body.light-mode .input-container.pill-shape:focus-within {
 /* Green Neon Glass Pills (Outputs)        */
 /* ======================================= */
 .output-container.pill-shape {
-  width: 154px;
+  min-width: 154px;
+  width: auto;
+  padding: 0 16px;
   height: 46px;
   background-color: var(--color-green-bg);
   border: 1px solid var(--color-green-border);
@@ -560,8 +562,13 @@ body.light-mode .accordion-trigger:hover {
 }
 
 .accordion-content {
+  max-height: 0;
   overflow: hidden;
   transition: max-height var(--transition-normal) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accordion-content.open {
+  max-height: 600px;
 }
 
 .accordion-inner {

@@ -162,17 +162,19 @@ function runCalculations() {
   // Calculate boxes (병 수 / 박스규격)
   boxes = activeBottles / boxStandard;
 
-  // Practical box packaging breakdown
-  const bottlesRecommended = Math.ceil(activeBottles);
-  const boxesInt = Math.floor(bottlesRecommended / boxStandard);
-  const bottlesRemainder = bottlesRecommended % boxStandard;
+  // Practical box packaging breakdown (floored for exact remaining bottles)
+  const bottlesFloor = Math.floor(activeBottles);
+  const boxesInt = Math.floor(bottlesFloor / boxStandard);
+  const bottlesRemainder = bottlesFloor % boxStandard;
 
   // Update main display pills
   updateValueIfChanged(elements.outTotalVolume, formatOutputValue(totalVolumeL));
   updateValueIfChanged(elements.outBottles350, formatOutputValue(bottles350));
   updateValueIfChanged(elements.outBottles500, formatOutputValue(bottles500));
   updateValueIfChanged(elements.outBottles1l, formatOutputValue(bottles1l));
-  updateValueIfChanged(elements.outBoxes, formatOutputValue(boxes));
+  
+  const formattedBoxes = activeBottles > 0 ? `${boxesInt}박스, 남은 병 ${bottlesRemainder}개` : "0박스, 남은 병 0개";
+  updateValueIfChanged(elements.outBoxes, formattedBoxes);
 
   // Update detailed accordion outputs
   updateValueIfChanged(elements.detTotalMl, `${formatNumber(totalVolumeMl, 0)} ml`);
@@ -184,9 +186,6 @@ function runCalculations() {
   } else {
     elements.detBoxesPack.textContent = "0 박스 + 0 병 (선택된 병이 없거나 잔량이 없습니다)";
   }
-
-  // Sync accordion height if open
-  updateAccordionHeight();
 }
 
 // 6. UI Helpers
@@ -196,13 +195,6 @@ function updateValueIfChanged(element, newValue) {
     element.classList.remove('changed-flash');
     void element.offsetWidth; // Trigger reflow
     element.classList.add('changed-flash');
-  }
-}
-
-function updateAccordionHeight() {
-  const isExpanded = elements.toggleDetailsBtn.getAttribute('aria-expanded') === 'true';
-  if (isExpanded) {
-    elements.detailsContent.style.maxHeight = elements.detailsContent.scrollHeight + 'px';
   }
 }
 
@@ -272,7 +264,7 @@ function setupSharing() {
   * 350ml 병 수: ${b350} 개
   * 500ml 병 수: ${b500} 개
   * 1L 병 수: ${b1l} 개
-- 필요한 박스 수: ${boxesVal} 개
+- 필요한 박스 수: ${boxesVal}
   * 포장 가이드: ${detBoxesPack}
 - 일시: ${new Date().toLocaleString('ko-KR')}`;
 
@@ -297,11 +289,7 @@ function setupControls() {
     const nextState = !isExpanded;
     elements.toggleDetailsBtn.setAttribute('aria-expanded', nextState);
     
-    if (nextState) {
-      elements.detailsContent.style.maxHeight = elements.detailsContent.scrollHeight + 'px';
-    } else {
-      elements.detailsContent.style.maxHeight = '0px';
-    }
+    elements.detailsContent.classList.toggle('open', nextState);
     
     playHapticClick();
   });
