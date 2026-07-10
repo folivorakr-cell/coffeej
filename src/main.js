@@ -3,45 +3,36 @@ import './style.css';
 // CoffeeJ Real-time Calculation and Interaction Logic
 // Aligned to user sketch layout & custom checkbox logic
 
-// 1. DOM Elements
-const elements = {
-  // Inputs
-  machineCapacity: document.getElementById('machine-capacity'),
-  instrumentCount: document.getElementById('instrument-count'),
-  needed350: document.getElementById('needed-350'),
-  needed500: document.getElementById('needed-500'),
-  needed1l: document.getElementById('needed-1l'),
-  
-  // Checkboxes (Grey squares in sketch)
-  active350: document.getElementById('active-350'),
-  active500: document.getElementById('active-500'),
-  active1l: document.getElementById('active-1l'),
-  
-  // Outputs (Green pills in sketch)
-  outTotalVolume: document.getElementById('out-total-volume'),
-  outBottles350: document.getElementById('out-bottles-350'),
-  outBottles500: document.getElementById('out-bottles-500'),
-  outBottles1l: document.getElementById('out-bottles-1l'),
-  outBoxes: document.getElementById('out-boxes'),
-  
-  // Detailed accordion outputs
-  detTotalMl: document.getElementById('det-total-ml'),
-  detNeededVolume: document.getElementById('det-needed-volume'),
-  detRemainingVolume: document.getElementById('det-remaining-volume'),
-  detBoxesPack: document.getElementById('det-boxes-pack'),
-  
-  // Buttons & Controls
-  toggleDetailsBtn: document.getElementById('toggle-details-btn'),
-  detailsContent: document.getElementById('details-content'),
-  resetBtn: document.getElementById('reset-btn'),
-  copyBtn: document.getElementById('copy-report-btn'),
-  copyToast: document.getElementById('copy-toast'),
-  soundToggle: document.getElementById('sound-toggle-btn'),
-  themeToggle: document.getElementById('theme-toggle-btn'),
-  
-  // Body
-  body: document.body
-};
+// 1. DOM Elements State
+const elements = {};
+
+function initializeElements() {
+  elements.machineCapacity = document.getElementById('machine-capacity');
+  elements.instrumentCount = document.getElementById('instrument-count');
+  elements.needed350 = document.getElementById('needed-350');
+  elements.needed500 = document.getElementById('needed-500');
+  elements.needed1l = document.getElementById('needed-1l');
+  elements.active350 = document.getElementById('active-350');
+  elements.active500 = document.getElementById('active-500');
+  elements.active1l = document.getElementById('active-1l');
+  elements.outTotalVolume = document.getElementById('out-total-volume');
+  elements.outBottles350 = document.getElementById('out-bottles-350');
+  elements.outBottles500 = document.getElementById('out-bottles-500');
+  elements.outBottles1l = document.getElementById('out-bottles-1l');
+  elements.outBoxes = document.getElementById('out-boxes');
+  elements.detTotalMl = document.getElementById('det-total-ml');
+  elements.detNeededVolume = document.getElementById('det-needed-volume');
+  elements.detRemainingVolume = document.getElementById('det-remaining-volume');
+  elements.detBoxesPack = document.getElementById('det-boxes-pack');
+  elements.toggleDetailsBtn = document.getElementById('toggle-details-btn');
+  elements.detailsContent = document.getElementById('details-content');
+  elements.resetBtn = document.getElementById('reset-btn');
+  elements.copyBtn = document.getElementById('copy-report-btn');
+  elements.copyToast = document.getElementById('copy-toast');
+  elements.soundToggle = document.getElementById('sound-toggle-btn');
+  elements.themeToggle = document.getElementById('theme-toggle-btn');
+  elements.body = document.body;
+}
 
 // 2. Audio State
 let soundEnabled = true;
@@ -284,83 +275,99 @@ function setupSharing() {
 // 9. Accordion, Theme & Controls
 function setupControls() {
   // Accordion Toggle
-  elements.toggleDetailsBtn.addEventListener('click', () => {
-    const isExpanded = elements.toggleDetailsBtn.getAttribute('aria-expanded') === 'true';
-    const nextState = !isExpanded;
-    elements.toggleDetailsBtn.setAttribute('aria-expanded', nextState);
-    
-    elements.detailsContent.classList.toggle('open', nextState);
-    
-    playHapticClick();
-  });
+  if (elements.toggleDetailsBtn) {
+    elements.toggleDetailsBtn.addEventListener('click', () => {
+      const isExpanded = elements.toggleDetailsBtn.getAttribute('aria-expanded') === 'true';
+      const nextState = !isExpanded;
+      elements.toggleDetailsBtn.setAttribute('aria-expanded', nextState);
+      
+      if (elements.detailsContent) {
+        elements.detailsContent.classList.toggle('open', nextState);
+        console.log('Accordion toggled, open status:', elements.detailsContent.classList.contains('open'));
+      }
+      
+      playHapticClick();
+    });
+  }
 
   // Reset
-  elements.resetBtn.addEventListener('click', () => {
-    playHapticClick();
-    
-    elements.machineCapacity.value = "15.0";
-    elements.instrumentCount.value = "12";
-    elements.needed350.value = "0";
-    elements.needed500.value = "0";
-    elements.needed1l.value = "0";
-    
-    elements.active350.checked = false;
-    elements.active500.checked = false;
-    elements.active1l.checked = true; // 1L target by default
-    
-    runCalculations();
-  });
+  if (elements.resetBtn) {
+    elements.resetBtn.addEventListener('click', () => {
+      playHapticClick();
+      
+      elements.machineCapacity.value = "15.0";
+      elements.instrumentCount.value = "12";
+      elements.needed350.value = "0";
+      elements.needed500.value = "0";
+      elements.needed1l.value = "0";
+      
+      elements.active350.checked = false;
+      elements.active500.checked = false;
+      elements.active1l.checked = true; // 1L target by default
+      
+      runCalculations();
+    });
+  }
 
   // Sound Toggle
-  elements.soundToggle.addEventListener('click', () => {
-    soundEnabled = !soundEnabled;
-    playHapticClick();
-    
-    const path = elements.soundToggle.querySelector('svg path');
-    if (soundEnabled) {
-      path.setAttribute('d', 'M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14');
-      elements.soundToggle.style.opacity = '1';
-    } else {
-      path.setAttribute('d', 'M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6');
-      elements.soundToggle.style.opacity = '0.5';
-    }
-  });
+  if (elements.soundToggle) {
+    elements.soundToggle.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      playHapticClick();
+      
+      const path = elements.soundToggle.querySelector('svg path');
+      if (soundEnabled) {
+        path.setAttribute('d', 'M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14');
+        elements.soundToggle.style.opacity = '1';
+      } else {
+        path.setAttribute('d', 'M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6');
+        elements.soundToggle.style.opacity = '0.5';
+      }
+    });
+  }
 
   // Theme Toggle (Dark / Light)
-  const savedTheme = localStorage.getItem('theme') || 'dark';
-  if (savedTheme === 'light') {
-    elements.body.classList.add('light-mode');
-    toggleThemeIcons(false); // isDark = false
-  } else {
-    toggleThemeIcons(true); // isDark = true
+  if (elements.themeToggle) {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    if (savedTheme === 'light') {
+      elements.body.classList.add('light-mode');
+      toggleThemeIcons(false); // isDark = false
+    } else {
+      toggleThemeIcons(true); // isDark = true
+    }
+    
+    elements.themeToggle.addEventListener('click', () => {
+      playHapticClick();
+      const isLight = elements.body.classList.toggle('light-mode');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      toggleThemeIcons(!isLight); // if isLight is true, it is not dark (isDark = false)
+    });
   }
-  
-  elements.themeToggle.addEventListener('click', () => {
-    playHapticClick();
-    const isLight = elements.body.classList.toggle('light-mode');
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    toggleThemeIcons(!isLight); // if isLight is true, it is not dark (isDark = false)
-  });
 }
 
 function toggleThemeIcons(isDark) {
+  if (!elements.themeToggle) return;
   const sunIcon = elements.themeToggle.querySelector('.sun-icon');
   const moonIcon = elements.themeToggle.querySelector('.moon-icon');
-  if (isDark) {
-    sunIcon.style.display = 'block';
-    moonIcon.style.display = 'none';
-  } else {
-    sunIcon.style.display = 'none';
-    moonIcon.style.display = 'block';
+  if (sunIcon && moonIcon) {
+    if (isDark) {
+      sunIcon.style.display = 'block';
+      moonIcon.style.display = 'none';
+    } else {
+      sunIcon.style.display = 'none';
+      moonIcon.style.display = 'block';
+    }
   }
 }
 
 // 10. Initialization
 function init() {
+  initializeElements();
   bindInputs();
   setupSharing();
   setupControls();
   runCalculations();
+  console.log('CoffeeJ initialized. Details content ready:', !!elements.detailsContent);
 }
 
 // Initialize
